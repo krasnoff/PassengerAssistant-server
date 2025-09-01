@@ -1,6 +1,5 @@
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
-import { openai } from '@ai-sdk/openai';
-import { generateText, ModelMessage, streamText } from 'ai';
+import { generateText, ModelMessage } from 'ai';
 import 'dotenv/config';
 import * as readline from 'node:readline/promises';
 
