@@ -1,12 +1,12 @@
 {
   "name": "my-ai-app-3",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon",
     "build": "tsc",
-    "start": "node dist/index.js",
+    "start": "node dist/app.js",
     "typecheck": "tsc --noEmit"
   },
   "keywords": [],
@@ -15,7 +15,6 @@
   "description": "",
   "dependencies": {
     "@ai-sdk/google": "^2.0.11",
-    "@ai-sdk/openai": "^2.0.0-beta.16",
     "ai": "^5.0.0-beta.34",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
