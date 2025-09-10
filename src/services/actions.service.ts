@@ -16,6 +16,7 @@ async function returnActionResponse(prompt: any[]): Promise<any> {
     const result = await generateText({
         model: google('gemini-2.5-flash'),
         messages: prompt,
+        system: 'If the user asks for the weather, use the weather tool to get the weather in a location. Only use the tool if the user asks for the weather. Always answer in a concise manner.',
         tools: {
             weather: tool({
                 description: 'Get the weather in a location (fahrenheit)',
@@ -25,17 +26,26 @@ async function returnActionResponse(prompt: any[]): Promise<any> {
                     .describe('The location to get the weather for'),
                 }),
                 execute: async ({ location }) => {
+                    console.log(`Getting weather for ${location}`);
                     const temperature = Math.round(Math.random() * (90 - 32) + 32);
-                    return {
-                    location,
-                    temperature,
-                    };
+                    return "The weather in " + location + " is " + temperature + "°F.";
+                    // return {
+                    // location,
+                    // temperature,
+                    // };
                 },
             }),
         }
     });
 
-    return { role: 'assistant', content: result.text };
+    if (result.toolResults && result.toolResults.length > 0) {
+        // The answer is from a tool
+        const toolResult = result.toolResults[0];
+        return { role: 'tool', name: toolResult.toolName, content: toolResult.result };
+    } else {
+        // The answer is plain text
+        return { role: 'assistant', content: result.text };
+    }
 }
 
 export default {
