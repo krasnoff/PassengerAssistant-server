@@ -1,18 +1,22 @@
-import { tool } from 'ai';
-import { z } from 'zod';
-
+import { tool } from "ai";
+import z from "zod";
 
 export const routeTool = tool({
-    name: "routeTool", // required by createTool
-    description: 'get the route between two locations',
-    inputSchema: z.object({
-        fromLocation: z.string().describe('The location to get the route from'),
-        toLocation: z.string().describe('The location to get the route to'),
+    description: 'Get the routes by public transport from one location to another',
+    parameters: z.object({
+        fromLocation: z
+            .string()
+            .describe('Passenger starting point'),
+        toLocation: z
+            .string()
+            .describe('Passenger destination point'),
     }),
-    execute: async ({ fromLocation, toLocation }: { fromLocation: string; toLocation: string }) => {
+    execute: async ({ fromLocation, toLocation }) => {
+        console.log(`Getting routes from ${fromLocation} to ${toLocation}`);
         return {
             fromLocation,
             toLocation,
+            route: "Take the bus from " + fromLocation + " to " + toLocation
         };
     },
-});
+})

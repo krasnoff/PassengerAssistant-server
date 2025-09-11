@@ -1,41 +1,24 @@
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
-import { generateText, tool } from "ai";
+import { generateText } from "ai";
 import 'dotenv/config';
-import { z } from 'zod';
-import * as readline from 'node:readline/promises';
+import { routeTool } from "../tools/route.tool";
 
 const google = createGoogleGenerativeAI({
     // custom settings
     apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY || '',
 });
 
-
+const tools = {
+    route: routeTool
+}
 
 async function returnActionResponse(prompt: any[]): Promise<any> {
     
     const result = await generateText({
         model: google('gemini-2.5-flash'),
         messages: prompt,
-        system: 'If the user asks for the weather, use the weather tool to get the weather in a location. Only use the tool if the user asks for the weather. Always answer in a concise manner.',
-        tools: {
-            weather: tool({
-                description: 'Get the weather in a location (fahrenheit)',
-                parameters: z.object({
-                    location: z
-                    .string()
-                    .describe('The location to get the weather for'),
-                }),
-                execute: async ({ location }) => {
-                    console.log(`Getting weather for ${location}`);
-                    const temperature = Math.round(Math.random() * (90 - 32) + 32);
-                    return "The weather in " + location + " is " + temperature + "°F.";
-                    // return {
-                    // location,
-                    // temperature,
-                    // };
-                },
-            }),
-        }
+        system: 'You are a helpful assistant that helps people find public transport routes in a city. You can use the "route" tool to get the routes by public transport from one location to another.',
+        tools: tools
     });
 
     if (result.toolResults && result.toolResults.length > 0) {
