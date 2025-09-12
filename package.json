@@ -17,6 +17,8 @@
     "@ai-sdk/google": "^1.2.22",
     "@googlemaps/routing": "^2.1.0",
     "ai": "^4.3.19",
+    "date-fns": "^4.1.0",
+    "date-fns-tz": "^3.2.0",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "zod": "^3.25.76"
