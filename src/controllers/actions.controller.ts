@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.post("/actions", async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const result = await actionsService.returnActionResponse(req.body.messages);
+    const result = await actionsService.returnActionResponse(req.body);
     res.json(result);
   } catch (error) {
     next(error);

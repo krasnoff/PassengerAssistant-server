@@ -1,22 +1,22 @@
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { generateText } from "ai";
 import 'dotenv/config';
-import { routeTool } from "../tools/route.tool";
+import { createRouteTool } from "../tools/route.tool";
 
 const google = createGoogleGenerativeAI({
     // custom settings
     apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY || '',
 });
 
-const tools = {
-    route: routeTool
-}
+async function returnActionResponse(prompt: any): Promise<any> {
 
-async function returnActionResponse(prompt: any[]): Promise<any> {
-    
+    const tools = {
+        route: createRouteTool(prompt.args)
+    };
+
     const result = await generateText({
         model: google('gemini-2.5-flash'),
-        messages: prompt,
+        messages: prompt.messages,
         system: 'You are a helpful assistant that helps people find public transport routes in a city. You can use the "route" tool to get the routes by public transport from one location to another.',
         tools: tools
     });
