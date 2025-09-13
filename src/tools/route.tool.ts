@@ -18,7 +18,7 @@ export function createRouteTool(args: ActionResponseArgs) {
                 coordinates: z
                     .object({ lat: z.number(), lng: z.number() })
                     .optional()
-                    .describe('Latitude and Longitude coordinates. if there is no fromLocation address then use these coordinates'),
+                    .describe('Latitude and Longitude coordinates. if there is no starting point address then use these coordinates'),
             })
             .describe('Passenger starting point')
             .optional(),
