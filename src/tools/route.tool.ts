@@ -11,24 +11,24 @@ export function createRouteTool(args: ActionResponseArgs) {
             Get the routes by public transport from one location to another.
             The starting point (fromLocation) is optional. If it's not provided,
             the tool will use provided coordinates (if available) or fall back to a sensible default.`,
-    parameters: z.object({
-        fromLocation: z
-            .object({
-                address: z.string().min(1).optional(),
-                coordinates: z
-                    .object({ lat: z.number(), lng: z.number() })
-                    .optional()
-                    .describe('Latitude and Longitude coordinates. if there is no starting point address then use these coordinates'),
-            })
-            .describe('Passenger starting point')
-            .optional(),
-        toLocation: z
-            .string()
-            .describe('Passenger destination point'),
-        when: z
-            .string()
-            .optional()
-            .describe('When to depart: ISO datetime string'),
+        parameters: z.object({
+            fromLocation: z
+                .object({
+                    address: z.string().min(1).optional(),
+                    coordinates: z
+                        .object({ lat: z.number(), lng: z.number() })
+                        .optional()
+                        .describe('Latitude and Longitude coordinates. if there is no starting point address then use these coordinates'),
+                })
+                .describe('Passenger starting point')
+                .optional(),
+            toLocation: z
+                .string()
+                .describe('Passenger destination point'),
+            when: z
+                .string()
+                .optional()
+                .describe('When to depart: ISO datetime string'),
     }),
     execute: async ({ fromLocation, toLocation, when }) => {
         // Basic logging without object coercion noise
