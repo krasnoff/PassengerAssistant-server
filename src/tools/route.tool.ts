@@ -3,8 +3,9 @@ import z from "zod";
 import type { RouteRequest } from "../services/route.service";
 import { returnRouteResponse } from "../services/route.service";
 import { parseNaturalWhenToISO } from "./time.tool";
+import { ActionResponseArgs } from "../interfaces/return-action-response.interface";
 
-export function createRouteTool(args: any) {
+export function createRouteTool(args: ActionResponseArgs) {
     return tool({
         description: `
             Get the routes by public transport from one location to another.
@@ -43,7 +44,7 @@ export function createRouteTool(args: any) {
         const departureISO = parseNaturalWhenToISO(when, args.currentTime ? new Date(args.currentTime) : new Date());
 
         // Default to NYC if nothing provided
-    const defaultCoords = { lat: 40.712776, lng: -74.005974 } as const;
+        const defaultCoords = { lat: 40.712776, lng: -74.005974 } as const;
 
         const origin = fromLocation?.address
             ? { address: fromLocation.address }
