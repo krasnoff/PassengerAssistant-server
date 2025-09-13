@@ -63,6 +63,7 @@ export function createRouteTool(args: ActionResponseArgs) {
                 routingPreference: "FEWER_TRANSFERS"
             }
         }
+        console.log('Route request sent:', routeRequest);
 
         try {
             const response = await returnRouteResponse(routeRequest);
