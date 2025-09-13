@@ -8,11 +8,18 @@ export interface RouteRequest {
 }
 
 export interface Origin {
-  address: string
+  address?: string
+  coordinates?: Coordinates
 }
 
 export interface Destination {
-  address: string
+  address?: string
+  coordinates?: Coordinates
+}
+
+export interface Coordinates {
+  lat: number
+  lng: number
 }
 
 export interface TransitPreferences {

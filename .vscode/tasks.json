@@ -9,6 +9,12 @@
 				"$tsc"
 			],
 			"group": "build"
+		},
+		{
+			"label": "TypeScript typecheck",
+			"type": "shell",
+			"command": "npm run -s typecheck",
+			"group": "build"
 		}
 	]
 }

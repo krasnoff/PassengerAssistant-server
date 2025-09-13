@@ -2,13 +2,19 @@ import { tool } from "ai";
 import z from "zod";
 import type { RouteRequest } from "../services/route.service";
 import { returnRouteResponse } from "../services/route.service";
-import { getNextMondayAtNineInNY } from './time.tool';
 
 export const routeTool = tool({
-    description: 'Get the routes by public transport from one location to another',
+    description: `
+        Get the routes by public transport from one location to another.
+        if the source is not specified then use coordinates`,
     parameters: z.object({
         fromLocation: z
-            .string()
+            .object({
+                address: z.string().min(1).optional(),
+                coordinates: z
+                    .object({ lat: z.number(), lng: z.number() })
+                    .optional()
+            })
             .describe('Passenger starting point'),
         toLocation: z
             .string()
@@ -19,17 +25,30 @@ export const routeTool = tool({
             .describe('When to depart: "now" (default) or "monday-9am-ny"'),
     }),
     execute: async ({ fromLocation, toLocation, when }) => {
-        console.log(`Getting routes from ${fromLocation} to ${toLocation}`);
+        // Basic logging without object coercion noise
+        const fromLog = fromLocation?.address
+            ? `address: ${fromLocation.address}`
+            : fromLocation?.coordinates
+                ? `coords: (${fromLocation.coordinates.lat}, ${fromLocation.coordinates.lng})`
+                : 'unspecified';
+        console.log(`Getting routes from ${fromLog} to address: ${toLocation}`);
 
-        let departureISO = '2025-09-15T09:00:00Z'; // new Date().toISOString();
-        // if ((when || '').toLowerCase() === 'monday-9am-ny') {
-        //     const target = getNextMondayAtNineInNY();
-        //     departureISO = target.toISOString();
-        //     console.log('Using departureTime (NY Monday 09:00):', departureISO);
-        // }
+        // Resolve departure time
+        const departureISO = when && when.toLowerCase() !== 'now'
+            ? when
+            : new Date().toISOString();
+
+        // Default to NYC if nothing provided
+        const defaultCoords = { lat: 40.712776, lng: -74.005974 } as const;
+
+        const origin = fromLocation?.address
+            ? { address: fromLocation.address }
+            : fromLocation?.coordinates
+                ? { coordinates: fromLocation.coordinates }
+                : { coordinates: defaultCoords };
 
         const routeRequest: RouteRequest = {
-            origin: { address: fromLocation },
+            origin,
             destination: { address: toLocation },
             travelMode: "TRANSIT",
             departureTime: departureISO,
@@ -42,15 +61,18 @@ export const routeTool = tool({
 
         try {
             const response = await returnRouteResponse(routeRequest);
-            console.log('Route response:', response);
+            console.log('Route response received.');
+            return {
+                ok: true,
+                request: routeRequest,
+                raw: response,
+            };
         } catch (error) {
             console.error('Error fetching route:', error);
+            return {
+                ok: false,
+                error: (error as Error).message,
+            };
         }
-        
-        return {
-            fromLocation,
-            toLocation,
-            route: "Take the bus from " + fromLocation + " to " + toLocation
-        };
     },
 })
