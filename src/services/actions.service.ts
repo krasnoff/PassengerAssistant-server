@@ -26,7 +26,7 @@ async function returnActionResponse(prompt: ActionResponse): Promise<any> {
             }
             throw new Error(`Invalid message role: ${msg.role}`);
         }),
-        system: 'You are a helpful assistant that helps people find public transport routes in a city. You can use the "route" tool to get the routes by public transport from one location to another.',
+        system: `You are a helpful assistant that helps people find public transport routes in a city. You can use the "route" tool to get the routes by public transport from one location to another.`,
         tools: tools
     });
 
