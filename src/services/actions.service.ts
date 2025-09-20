@@ -1,5 +1,5 @@
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
-import { generateText } from "ai";
+import { CoreMessage, generateText } from "ai";
 import 'dotenv/config';
 import { createRouteTool } from "../tools/route.tool";
 import { ActionResponse } from "../interfaces/return-action-response.interface";
@@ -9,7 +9,7 @@ const google = createGoogleGenerativeAI({
     apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY || '',
 });
 
-async function returnActionResponse(prompt: ActionResponse): Promise<any> {
+async function returnActionResponse(prompt: ActionResponse): Promise<CoreMessage> {
 
     const tools = {
         route: createRouteTool(prompt.args)
@@ -31,12 +31,24 @@ async function returnActionResponse(prompt: ActionResponse): Promise<any> {
     });
 
     if (result.toolResults && result.toolResults.length > 0) {
-        // The answer is from a tool
-        const toolResult = result.toolResults[0];
-        return { role: 'tool', name: toolResult.toolName, content: toolResult.result };
+        // Tool response: map all tool results to CoreToolMessage shape
+        const toolMessage: CoreMessage = {
+            role: 'tool',
+            content: result.toolResults.map((tr: any) => ({
+                type: 'tool-result',
+                toolCallId: tr.toolCallId,
+                toolName: tr.toolName,
+                result: tr.result
+            }))
+        };
+        return toolMessage;
     } else {
-        // The answer is plain text
-        return { role: 'assistant', content: result.text };
+        // Assistant text response mapped to CoreMessage
+        const assistantMessage: CoreMessage = {
+            role: 'assistant',
+            content: result.text
+        } as CoreMessage;
+        return assistantMessage;
     }
 }
 
