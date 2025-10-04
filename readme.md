@@ -21,8 +21,8 @@ Use at your own risk.
 
 ### Licensing / Permission
 If you want to use this code beyond the limitations above, **contact the author for a separate license**:
-- Author: _Your Name_
-- Contact: _your@email_
+- Author: Kobi Krasnoff
+- Contact: krasnoff.kobi@gmail.com
 
 By accessing or using any part of this repository, you agree to the terms above.  
 If you do not agree, do not use this repository.
