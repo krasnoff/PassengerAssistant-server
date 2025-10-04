@@ -4,6 +4,7 @@ export interface ActionResponse {
 }
 
 export interface ActionResponseArgs {
+    destination: boolean;
     startingPoint: any;
     coordinates?: Coordinates
     currentTime?: string
