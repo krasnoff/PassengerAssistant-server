@@ -27,7 +27,9 @@ async function returnActionResponse(prompt: ActionResponse): Promise<CoreMessage
             throw new Error(`Invalid message role: ${msg.role}`);
         }),
         system: `You are a helpful assistant that helps people find public transport routes in a city. You can use the "route" tool to get the routes by public transport from one location to another.`,
-        tools: tools
+        tools: tools,
+        // Force tool usage when no starting point is provided
+        toolChoice: !prompt.args?.startingPoint ? 'required' : 'auto'
     });
 
     if (result.toolResults && result.toolResults.length > 0) {
