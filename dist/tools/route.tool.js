@@ -40,7 +40,7 @@ function createRouteTool(args) {
                 : fromLocation?.coordinates
                     ? `coords: (${fromLocation.coordinates.lat}, ${fromLocation.coordinates.lng})`
                     : 'unspecified';
-            console.log(`Getting routes from ${fromLog} to address: ${toLocation}`);
+            // console.log(`Getting routes from ${fromLog} to address: ${toLocation}`);
             // Resolve departure time
             // Convert natural language like "monday morning", "tomorrow afternoon", "text week" to ISO
             const departureISO = (0, time_tool_1.parseNaturalWhenToISO)(when, args.currentTime ? new Date(args.currentTime) : new Date());
@@ -62,10 +62,10 @@ function createRouteTool(args) {
                     routingPreference: "FEWER_TRANSFERS"
                 }
             };
-            console.log('Route request sent:', routeRequest);
+            // console.log('Route request sent:', routeRequest);
             try {
                 const response = await (0, route_service_1.returnRouteResponse)(routeRequest);
-                console.log('Route response received.');
+                // console.log('Route response received.');
                 return {
                     ok: true,
                     request: routeRequest,
