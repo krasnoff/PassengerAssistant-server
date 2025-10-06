@@ -9,6 +9,8 @@ const server = express();
 server.use(express.json());
 server.use("/api", actionsController);
 
-server.listen(80, '0.0.0.0', () => {
-  console.log('Server is running on http://localhost:80');
+const port: number = parseInt(process.env.PORT as string) || 80;
+
+server.listen(port, '0.0.0.0', () => {
+  console.log(`Server is running on http://localhost:${process.env.PORT}`);
 });

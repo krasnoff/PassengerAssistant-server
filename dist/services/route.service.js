@@ -12,9 +12,11 @@ async function returnRouteResponse(routeRequest) {
         fallbackRest: true,
         apiKey,
     });
-    const departure = new Date();
+    // Build protobuf Timestamp for departureTime (client serializer expects object)
+    const departureDate = routeRequest.departureTime ? new Date(routeRequest.departureTime) : new Date();
     const departureTimestamp = {
-        seconds: Math.floor(departure.getTime() / 1000),
+        seconds: String(Math.floor(departureDate.getTime() / 1000)),
+        nanos: (departureDate.getMilliseconds() % 1000) * 1000000,
     };
     // Only allow valid travel modes and routing preferences
     const validModes = ['BUS', 'RAIL', 'SUBWAY', 'TRAM', 'FERRY'];
@@ -28,9 +30,11 @@ async function returnRouteResponse(routeRequest) {
         ? transitPrefs.routingPreference
         : 'FEWER_TRANSFERS';
     const [res] = await routing.computeRoutes({
+        // Waypoint accepts address/placeId/location; we use address strings
         origin: routeRequest.origin,
         destination: routeRequest.destination,
         travelMode: routeRequest.travelMode || 'TRANSIT',
+        // For client lib, provide Timestamp object
         departureTime: departureTimestamp,
         computeAlternativeRoutes: routeRequest.computeAlternativeRoutes ?? true,
         transitPreferences: {
@@ -42,8 +46,15 @@ async function returnRouteResponse(routeRequest) {
         otherArgs: {
             headers: {
                 'Content-Type': 'application/json',
-                // ask only for what you need to reduce latency/size:
-                'X-Goog-FieldMask': 'routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline,routes.legs.transitDetails,routes.legs.transitLine,routes.legs.transitStops,routes.legs.transitAgencies,routes.legs.transitFare',
+                // Ask only for what you need to reduce latency/size with valid field paths
+                // For transit, details are on legs.steps.transitDetails; transit fares live under travelAdvisory
+                'X-Goog-FieldMask': [
+                    'routes.duration',
+                    'routes.distanceMeters',
+                    'routes.polyline.encodedPolyline',
+                    'routes.legs.steps.transitDetails',
+                    'routes.travelAdvisory.transitFare'
+                ].join(','),
             },
         },
     });
