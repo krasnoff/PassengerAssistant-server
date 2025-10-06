@@ -5,8 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon",
-    "build": "npm run build",
-    "start": "npm start",
+    "build": "tsc",
+    "start": "node dist/app.js",
     "typecheck": "tsc --noEmit"
   },
   "keywords": [],
