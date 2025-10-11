@@ -31,14 +31,6 @@ export function createRouteTool(args: ActionResponseArgs) {
                 .describe('When to depart: ISO datetime string'),
     }),
     execute: async ({ fromLocation, toLocation, when }) => {
-        // Basic logging without object coercion noise
-        const fromLog = fromLocation?.address
-            ? `address: ${fromLocation.address}`
-            : fromLocation?.coordinates
-                ? `coords: (${fromLocation.coordinates.lat}, ${fromLocation.coordinates.lng})`
-                : 'unspecified';
-        // console.log(`Getting routes from ${fromLog} to address: ${toLocation}`);
-
         // Resolve departure time
         // Convert natural language like "monday morning", "tomorrow afternoon", "text week" to ISO
         const departureISO = parseNaturalWhenToISO(when, args.currentTime ? new Date(args.currentTime) : new Date());
