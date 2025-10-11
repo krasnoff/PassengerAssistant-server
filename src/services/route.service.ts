@@ -48,6 +48,7 @@ export async function returnRouteResponse(routeRequest: RouteRequest): Promise<a
             origin: routeRequest.origin as any,
             destination: routeRequest.destination as any,
             travelMode: routeRequest.travelMode || 'TRANSIT',
+            languageCode: 'he-IL',
             // For client lib, provide Timestamp object
             departureTime: departureTimestamp as any,
             computeAlternativeRoutes: routeRequest.computeAlternativeRoutes ?? true,
