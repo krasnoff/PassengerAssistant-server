@@ -34,6 +34,7 @@ async function returnRouteResponse(routeRequest) {
         origin: routeRequest.origin,
         destination: routeRequest.destination,
         travelMode: routeRequest.travelMode || 'TRANSIT',
+        languageCode: 'he-IL',
         // For client lib, provide Timestamp object
         departureTime: departureTimestamp,
         computeAlternativeRoutes: routeRequest.computeAlternativeRoutes ?? true,
